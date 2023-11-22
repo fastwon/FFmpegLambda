@@ -1,4 +1,4 @@
-package com.fastwon.config;
+package com.fastwon;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -7,22 +7,18 @@ import com.google.firebase.FirebaseOptions;
 //import org.springframework.core.io.ClassPathResource;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 
 public class FirebaseInitializer {
 
-//	@Value("${app.firebase-configuration-file}")
-	private String firebaseConfigPath;
-
 	public void initialize() {
-//		firebaseConfigPath = System.getenv("app.firebase-configuration-file");
-		firebaseConfigPath = System.getenv("APP_FIREBASE_CONFIGURATION_FILE");
-
-
 
 		try {
-			FirebaseOptions options = new FirebaseOptions.Builder()
+
+			FileInputStream fis = new FileInputStream("/var/task/fastwonboard-firebase-adminsdk-5at8g-590056fa54.json");
+			FirebaseOptions options = FirebaseOptions.builder()
 					.setCredentials(GoogleCredentials.
-					fromStream(new ByteArrayInputStream(firebaseConfigPath.getBytes()))).build();
+					fromStream(fis)).build();
 			if(FirebaseApp.getApps().isEmpty()) {
 				FirebaseApp.initializeApp(options);
 				

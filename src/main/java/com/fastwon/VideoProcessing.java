@@ -1,6 +1,5 @@
 package com.fastwon;
 
-import com.fastwon.config.FirebaseInitializer;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
 //import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +27,10 @@ public class VideoProcessing {
 
 
         try {
-//            ans = search("/opt/", "ffmpeg");
+            ans = search("/var/task", "fastwonboard-firebase-adminsdk-5at8g-590056fa54.json");
 
-            String ffmpegCheck = checkFfmpeg("/opt/bin/ffmpeg");
-
-            ans = ffmpegCheck;
+//            String ffmpegCheck = checkFfmpeg("/opt/bin/ffmpeg");
+//            ans = ffmpegCheck;
 
 
 
@@ -64,7 +62,6 @@ public class VideoProcessing {
 
             process.waitFor(); // 프로세스 완료 대기
 
-//            firebaseBucket = System.getenv("app.firebase-bucket");
             firebaseBucket = System.getenv("APP_FIREBASE_BUCKET");
 
             Bucket bucket = StorageClient.getInstance().bucket(firebaseBucket);
@@ -77,7 +74,7 @@ public class VideoProcessing {
             bucket.create(nameFile.toString(), contentStream , "video/mp4");
             contentStream.close();
 
-            ans = "성공";
+//            ans = "성공";
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -88,29 +85,29 @@ public class VideoProcessing {
     }
 
     // 특정 디렉토리 아래의 특정 파일을 찾는 메서드
-//    public static String search(String path, String target) {
-//        File dir = new File(path);
-//        File[] list = dir.listFiles();
-//
-//        String ans = "없다 아무것도";
-//
-//        if (list != null) {
-//            for (File file : list) {
-//                if (file.isDirectory()) {
-//                    String result = search(file.getAbsolutePath(), target);
-//                    if (!result.equals("없다 아무것도")) {
-//                        return result;  // 하위 디렉토리에서 ffmpeg를 찾았다면 그 결과를 반환합니다.
-//                    }
-//                } else {
-//                    if (file.getName().equals(target)) {
-//                        return "ffmpeg 파일 위치: " + file.getAbsolutePath();  // ffmpeg 파일을 찾았다면 그 위치를 반환합니다.
-//                    }
-//                }
-//            }
-//        }
-//
-//        return ans;  // ffmpeg 파일을 찾지 못했다면 "없다 아무것도"를 반환합니다.
-//    }
+    public static String search(String path, String target) {
+        File dir = new File(path);
+        File[] list = dir.listFiles();
+
+        String ans = "없다 아무것도";
+
+        if (list != null) {
+            for (File file : list) {
+                if (file.isDirectory()) {
+                    String result = search(file.getAbsolutePath(), target);
+                    if (!result.equals("없다 아무것도")) {
+                        return result;  // 하위 디렉토리에서 ffmpeg를 찾았다면 그 결과를 반환합니다.
+                    }
+                } else {
+                    if (file.getName().equals(target)) {
+                        return "ffmpeg 파일 위치: " + file.getAbsolutePath();  // ffmpeg 파일을 찾았다면 그 위치를 반환합니다.
+                    }
+                }
+            }
+        }
+
+        return ans;  // ffmpeg 파일을 찾지 못했다면 "없다 아무것도"를 반환합니다.
+    }
 
     public static String checkFfmpeg(String ffmpegPath) {
         String result = "잘못된 파일";
